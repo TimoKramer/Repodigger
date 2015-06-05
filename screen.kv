@@ -1,0 +1,36 @@
+#:kivy 1.4
+
+<Screen>:
+    AnchorLayout:
+        canvas.before:
+            Color:
+                rgba: 0, 0, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+
+<LoginScreen>:
+
+    BoxLayout:
+
+        padding: 20
+        spacing: 20
+        size_hint: 0.5, 0.5
+
+        Label:
+            text: 'Enter Repo'
+            width: 100
+            size_hint: .2, 1
+
+        TextInput:
+            size_hint: .8, 1
+            text: 'eg. timokramer/repodigger'
+            text_size: 15
+
+        Button:
+            text: 'OK'
+            text_size: 15
+            halign: 'center'
+            valign: 'middle'
+            size_hint: 2

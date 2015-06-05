@@ -4,7 +4,7 @@
 __author__ = 'Timo Kramer'
 __immanr__ = '20119022'
 
-import unittest
+import unittest, data, json
 
 
 def IsOdd(n):

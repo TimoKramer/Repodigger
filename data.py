@@ -7,7 +7,7 @@ __immanr__ = '20119022'
 import requests, json
 
 
-class GithubRequest():
+class GithubRequest:
 
     repo = 'timokramer/RepoDigger'
 
@@ -41,4 +41,4 @@ if __name__ == "__main__":
     req = GithubRequest('timokramer/PatFra')
     res = req.return_structured_data()
     for entry in res:
-        print(entry)
+        print(entry['title'])
