@@ -4,7 +4,7 @@
 __author__ = 'Timo Kramer'
 __immanr__ = '20119022'
 
-import kivy, github
+import kivy, github, json
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
@@ -17,7 +17,8 @@ class MainScreen(GridLayout):
         super(MainScreen, self).__init__(**kwargs)
         self.cols = 2
         self.add_widget(Label(text='Dummy'))
-        self.raw_json = Label(text=github.GithubRequest('timokramer/PatFra'))
+        issues = github.GithubRequest('timokramer/PatFra').return_json()
+        self.raw_json = Label(text='issues')
         self.add_widget(self.raw_json)
 
 class MyApp(App):
