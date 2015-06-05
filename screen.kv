@@ -1,36 +1,32 @@
-#:kivy 1.4
+<GridLayout>
+    canvas.before:
+        Color:
+            rgba: .1, .1, .1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
-<Screen>:
-    AnchorLayout:
-        canvas.before:
-            Color:
-                rgba: 0, 0, 1, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-
-
-<LoginScreen>:
-
+<RootWidget>
     BoxLayout:
-
-        padding: 20
-        spacing: 20
-        size_hint: 0.5, 0.5
-
+        size_hint: .7, .1
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        rows:1
         Label:
-            text: 'Enter Repo'
-            width: 100
-            size_hint: .2, 1
-
-        TextInput:
-            size_hint: .8, 1
-            text: 'eg. timokramer/repodigger'
-            text_size: 15
-
-        Button:
-            text: 'OK'
-            text_size: 15
-            halign: 'center'
+            text: "Enter Github-Repo"
+            text_size: self.width-10, self.height-10
             valign: 'middle'
-            size_hint: 2
+            halign: 'center'
+            size_hint_x: .3
+        TextInput:
+            hint_text: "eg. timokramer/repodigger"
+            text_size: self.width-10, self.height-10
+            valign: 'middle'
+            halign: 'center'
+            padding_y: ( self.height - self.line_height ) / 2
+            size_hint_x: .5
+        Button:
+            text: "OK"
+            text_size: self.width-20, self.height-20
+            valign: 'middle'
+            halign: 'center'
+            size_hint_x: .2
