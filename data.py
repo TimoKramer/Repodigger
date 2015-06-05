@@ -9,8 +9,7 @@ import requests, json
 
 class GithubRequest():
 
-    repo = 'timokramer/PatFra'
-    response = None
+    repo = 'timokramer/RepoDigger'
 
     def __init__(self, repo):
 
@@ -28,8 +27,18 @@ class GithubRequest():
 
         return self.response.json()
 
+    def return_string(self):
+
+        return self.response.text()
+
+    def return_structured_data(self):
+
+        issues = json.loads(self.response.text)
+        return issues
+
 
 if __name__ == "__main__":
     req = GithubRequest('timokramer/PatFra')
-    req.print_to_console()
-    #print(json.dumps(req.return_json(), sort_keys=True, indent=4, separators=(',', ': ')))
+    res = req.return_structured_data()
+    for entry in res:
+        print(entry)
