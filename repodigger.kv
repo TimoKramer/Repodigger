@@ -1,0 +1,60 @@
+<Manager>:
+    id: screen_manager
+    login_screen: login_screen
+    issue_screen: issue_screen
+
+    canvas.before:
+        Color:
+            rgba: .1, .1, .1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    LoginScreen:
+        id: login_screen
+        name: 'Login Screen'
+        manager: screen_manager
+
+    IssueScreen:
+        id: issue_screen
+        name: 'Issue Screen'
+        manager: screen_manager
+
+<IssueScreen>
+    GridLayout:
+        size_hint: .9, .9
+        Button:
+            text: "SampleButton"
+            on_press: print("Fine!")
+
+<LoginScreen>:
+    BoxLayout:
+        id: login_screen
+        size_hint: .7, .1
+        pos_hint: {'center_x': .5, 'center_y': .3}
+        rows:1
+        Label:
+            text: "Enter Github-Repo"
+            text_size: self.width-10, self.height-10
+            valign: 'middle'
+            halign: 'center'
+            size_hint_x: .3
+        TextInput:
+            id: text_input
+            on_text_validate: root.get_input(self.text)
+            text: ""
+            hint_text: "eg. timokramer/repodigger"
+            text_size: self.width-10, self.height-10
+            valign: 'middle'
+            halign: 'center'
+            padding_y: ( self.height - self.line_height ) / 2
+            size_hint_x: .5
+            multiline: False
+        Button:
+            id: ok_button
+            on_press: root.get_input(text_input.text)
+            text: "OK"
+            text_size: self.width-20, self.height-20
+            valign: 'middle'
+            halign: 'center'
+            size_hint_x: .2
