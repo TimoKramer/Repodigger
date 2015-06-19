@@ -70,6 +70,7 @@ class IssueScreen(Screen):
         for issue in issues:
             if issue['state'] == 'open':
                 self.item_strings.append(issue['title'])
+        self.issues_list.item_strings = self.item_strings
 
     def on_burndown_press(self):
         print("Fine!")
