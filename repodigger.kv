@@ -1,27 +1,40 @@
-#: import ListItemButton kivy.uix.listview.ListItemButton
+#: import Repodigger Repodigger
 #: import ListAdapter kivy.adapters.listadapter.ListAdapter
 
 <Manager>:
     id: screen_manager
     login_screen: login_screen
     issue_screen: issue_screen
-
+    detail_screen: detail_screen
+    burndown_screen: burndown_screen
     canvas.before:
         Color:
             rgba: .1, .1, .1, 1
         Rectangle:
             pos: self.pos
             size: self.size
-
     LoginScreen:
         id: login_screen
         name: 'Login Screen'
         manager: screen_manager
-
     IssueScreen:
         id: issue_screen
         name: 'Issue Screen'
         manager: screen_manager
+    DetailScreen:
+        id: detail_screen
+        name: 'Detail Screen'
+        manager: screen_manager
+    BurndownScreen:
+        id: burndown_screen
+        name: 'Burndown Screen'
+        manager: screen_manager
+
+<BurndownScreen>:
+    BoxLayout:
+        id: burndown_screen
+        Button:
+            text: 'BURNDOWN!'
 
 <IssueScreen>
     issues_list: issues_list
@@ -31,9 +44,8 @@
         ListView:
             id: issues_list
             size_hint: 1, .8
-            #item_strings: root.item_strings
             adapter:
-                ListAdapter(data=[], cls=ListItemButton)
+                ListAdapter(data=[], cls=Repodigger.IssueButton)
         BoxLayout:
             orientation: 'horizontal'
             size_hint: 1, .05
@@ -42,10 +54,19 @@
                 text: "change Repository"
                 on_press: root.on_change_press()
             Button:
-                #pos_hint: {'center_x': .9}
                 size_hint: .2, 1
                 text: "show Burndown"
                 on_press: root.on_burndown_press()
+
+<IssueButton>:
+    on_press: self.on_detail_press()
+
+<DetailScreen>:
+    BoxLayout:
+        id: detail_screen
+        orientation: 'vertical'
+        Button:
+            text: "Detail View"
 
 <LoginScreen>:
     BoxLayout:
