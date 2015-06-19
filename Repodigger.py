@@ -7,7 +7,6 @@ __immanr__ = '20119022'
 
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.modalview import ModalView
 from kivy.properties import ObjectProperty, ListProperty
 from kivy.network.urlrequest import UrlRequest
 import re
@@ -60,27 +59,23 @@ class LoginScreen(Screen):
         print('There was an error: ', error)
 
 
-class ListViewModal(ModalView):
-    item_strings = ListProperty(["test1", "test2"])
-
-    def __init__(self, **kwargs):
-        super(ListViewModal, self).__init__(**kwargs)
-        self.item_strings = kwargs['item_strings']
-
-
 class IssueScreen(Screen):
+    item_strings = ListProperty([])
 
     def __init__(self, **kwargs):
         kwargs['cols'] = 1
         super(IssueScreen, self).__init__(**kwargs)
 
     def build_issue_widgets(self, issues):
-        item_strings = []
         for issue in issues:
             if issue['state'] == 'open':
-                item_strings.append(issue['title'])
-        listview_modal = ListViewModal(item_strings=item_strings)
-        self.add_widget(listview_modal)
+                self.item_strings.append(issue['title'])
+
+    def on_burndown_press(self):
+        print("Fine!")
+
+    def on_change_press(self):
+        print("Fine!")
 
 
 if __name__ == '__main__':

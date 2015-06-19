@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7433137f-2813-4600-8ff3-1418c38628f9" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gh.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/screen.kv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/screen.py" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Repodigger.py" afterPath="$PROJECT_DIR$/Repodigger.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/repodigger.kv" afterPath="$PROJECT_DIR$/repodigger.kv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="esa3.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,7 +17,7 @@
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/esa3$Repodigger.coverage" NAME="Repodigger Coverage Results" MODIFIED="1434713132677" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/esa3$Repodigger.coverage" NAME="Repodigger Coverage Results" MODIFIED="1434716462477" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/esa3$kivy__1_.coverage" NAME="kivy (1) Coverage Results" MODIFIED="1433495908376" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/esa3$main.coverage" NAME="main Coverage Results" MODIFIED="1433495719716" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/esa3$Unittests_in_tests.coverage" NAME="Unittests in tests Coverage Results" MODIFIED="1433429385483" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -39,11 +33,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Repodigger.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Repodigger.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Repodigger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.79512197">
-              <caret line="86" column="7" selection-start-line="86" selection-start-column="7" selection-end-line="86" selection-end-column="7" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="77" column="22" selection-start-line="77" selection-start-column="22" selection-end-line="77" selection-end-column="22" />
               <folding>
                 <element signature="e#99#123#0" expanded="true" />
               </folding>
@@ -51,11 +45,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="repodigger.kv" pinned="false" current-in-tab="false">
+      <file leaf-file-name="repodigger.kv" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/repodigger.kv">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="62" column="25" selection-start-line="62" selection-start-column="25" selection-end-line="62" selection-end-column="25" />
+            <state vertical-scroll-proportion="0.5902439">
+              <caret line="35" column="19" selection-start-line="35" selection-start-column="19" selection-end-line="35" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -81,8 +75,8 @@
         <option value="$PROJECT_DIR$/LoginScreen.py" />
         <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/screen.py" />
-        <option value="$PROJECT_DIR$/repodigger.kv" />
         <option value="$PROJECT_DIR$/Repodigger.py" />
+        <option value="$PROJECT_DIR$/repodigger.kv" />
       </list>
     </option>
   </component>
@@ -590,21 +584,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/repodigger.kv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="62" column="25" selection-start-line="62" selection-start-column="25" selection-end-line="62" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Repodigger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.79512197">
-          <caret line="86" column="7" selection-start-line="86" selection-start-column="7" selection-end-line="86" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="77" column="22" selection-start-line="77" selection-start-column="22" selection-end-line="77" selection-end-column="22" />
           <folding>
             <element signature="e#99#123#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/repodigger.kv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5902439">
+          <caret line="35" column="19" selection-start-line="35" selection-start-column="19" selection-end-line="35" selection-end-column="19" />
+          <folding />
         </state>
       </provider>
     </entry>

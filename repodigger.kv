@@ -21,11 +21,23 @@
         manager: screen_manager
 
 <IssueScreen>
-    GridLayout:
-        size_hint: .9, .9
-        Button:
-            text: "SampleButton"
-            on_press: print("Fine!")
+    BoxLayout:
+        size_hint: 1, 1
+        orientation: 'vertical'
+        ListView:
+            size_hint: 1, .8
+            item_strings: root.item_strings
+        BoxLayout:
+            orientation: 'horizontal'
+            Button:
+                size_hint: .2, .1
+                text: "change Repository"
+                on_press: root.on_change_press()
+            Button:
+                #pos_hint: {'center_x': .9}
+                size_hint: .2, .1
+                text: "show Burndown"
+                on_press: root.on_burndown_press()
 
 <LoginScreen>:
     BoxLayout:
@@ -58,10 +70,3 @@
             valign: 'middle'
             halign: 'center'
             size_hint_x: .2
-
-<ListViewModal>:
-    size_hint: None, None
-    size: 400, 400
-    ListView:
-        size_hint: .8, .8
-        item_strings: root.item_strings
