@@ -21,11 +21,13 @@
         manager: screen_manager
 
 <IssueScreen>
+    list_view: list_view
     GridLayout:
         size_hint: .9, .9
-        Button:
-            text: "SampleButton"
-            on_press: print("Fine!")
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        cols: 1
+        ListView:
+            id: list_view
 
 <LoginScreen>:
     BoxLayout:
@@ -41,7 +43,8 @@
             size_hint_x: .3
         TextInput:
             id: text_input
-            on_text_validate: root.get_input(self.text)
+            on_text_validate:
+                root.get_input(self.text)
             text: ""
             hint_text: "eg. timokramer/repodigger"
             text_size: self.width-10, self.height-10
@@ -52,9 +55,17 @@
             multiline: False
         Button:
             id: ok_button
-            on_press: root.get_input(text_input.text)
+            on_press:
+                root.get_input(text_input.text)
             text: "OK"
             text_size: self.width-20, self.height-20
             valign: 'middle'
             halign: 'center'
             size_hint_x: .2
+
+[CustomListItem@SelectableView+BoxLayout]:
+    size_hint_y: ctx.size_hint_y
+    height: ctx.height
+    ListItemButton:
+        text: ctx.text
+        is_selected: ctx.is_selected
