@@ -14,7 +14,6 @@ import re
 
 
 class RepodiggerApp(App):
-
     def build(self):
         root = Manager()
         global global_screen_manager
@@ -81,19 +80,19 @@ class LoginScreen(Screen):
 
 
 class IssueScreen(Screen):
-    my_item_strings = ListProperty([])
 
     def __init__(self, **kwargs):
         kwargs['cols'] = 1
         super(IssueScreen, self).__init__(**kwargs)
 
     def build_issue_widgets(self, issues):
+        my_item_strings = []
         for issue in issues:
             if issue['state'] == 'open':
-                self.my_item_strings.append(issue['title'])
-        self.issues_list.item_strings = self.my_item_strings
+                my_item_strings.append(issue['title'])
+        self.issues_list.item_strings = my_item_strings
         self.issues_list.adapter.data.clear()
-        self.issues_list.adapter.data.extend(self.my_item_strings)
+        self.issues_list.adapter.data.extend(my_item_strings)
         self.issues_list._trigger_reset_populate()
 
     def on_burndown_press(self):
