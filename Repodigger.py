@@ -8,9 +8,11 @@ __immanr__ = '20119022'
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.listview import ListItemButton
-from kivy.properties import ObjectProperty, ListProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.network.urlrequest import UrlRequest
-import re
+from kivy.graphics import *
+from Data import Singleton
+import re, json, Data
 
 
 class RepodiggerApp(App):
@@ -28,18 +30,20 @@ class Manager(ScreenManager):
     burndown_screen = ObjectProperty(None)
 
 
-class DetailScreen(Screen):
-
-    def __init__(self, **kwargs):
-        super(DetailScreen, self).__init__(**kwargs)
-
-    def populate_details(self):
-        pass
-
-
 class BurndownScreen(Screen):
     def __init__(self, **kwargs):
         super(BurndownScreen, self).__init__(**kwargs)
+
+    def on_back_press(self):
+        global_screen_manager.current = 'Issue Screen'
+
+    def draw_burndown(self):
+        self.request_milestones()
+        with self.canvas:
+            Line(points=[100, 100, 200, 100, 100, 200], width=1.0)
+
+    #def request_milestones(self):
+
 
 
 class LoginScreen(Screen):
@@ -66,6 +70,9 @@ class LoginScreen(Screen):
         req.wait()
         if req.is_finished:
             print("Request Finished")
+            Singleton().set_repo_string(text_input)
+            Singleton().set_issue_json(req.result)
+            print(json.dumps(req.result, sort_keys=True, indent=4, separators=(',', ': ')))
 
     def parse_request(self, req, results):
         print('Succeeded requesting Github Issues')
@@ -97,6 +104,7 @@ class IssueScreen(Screen):
 
     def on_burndown_press(self):
         global_screen_manager.current = 'Burndown Screen'
+        global_screen_manager.get_screen('Burndown Screen').draw_burndown()
 
     def on_change_press(self):
         global_screen_manager.current = 'Login Screen'
@@ -114,6 +122,18 @@ class IssueButton(ListItemButton):
         print(self.parent.parent.parent.parent)
         print(self.parent.parent.parent.parent.parent)
         self.parent.parent.parent.parent.parent.on_detail_press()
+
+
+class DetailScreen(Screen):
+    def __init__(self, **kwargs):
+        super(DetailScreen, self).__init__(**kwargs)
+
+    def populate_details(self):
+        pass
+
+    def on_back_press(self):
+        print("back")
+        global_screen_manager.current = 'Issue Screen'
 
 
 if __name__ == '__main__':

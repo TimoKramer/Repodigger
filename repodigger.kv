@@ -33,8 +33,17 @@
 <BurndownScreen>:
     BoxLayout:
         id: burndown_screen
+        orientation: 'horizontal'
+        canvas:
+            Color:
+                rgba: .1, .1, .1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
         Button:
-            text: 'BURNDOWN!'
+            size_hint: .2, .1
+            text: 'Back'
+            on_press: root.on_back_press()
 
 <IssueScreen>
     issues_list: issues_list
@@ -64,9 +73,11 @@
 <DetailScreen>:
     BoxLayout:
         id: detail_screen
-        orientation: 'vertical'
+        orientation: 'horizontal'
         Button:
-            text: "Detail View"
+            size_hint: .2, .1
+            text: "Back"
+            on_press: root.on_back_press()
 
 <LoginScreen>:
     BoxLayout:
