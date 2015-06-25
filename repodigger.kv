@@ -54,7 +54,7 @@
             id: issues_list
             size_hint: 1, .8
             adapter:
-                ListAdapter(data=[], cls=Repodigger.IssueButton)
+                ListAdapter(data=root.issues_archive, cls=Repodigger.IssueButton)
         BoxLayout:
             orientation: 'horizontal'
             size_hint: 1, .05

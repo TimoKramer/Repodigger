@@ -8,7 +8,7 @@ __immanr__ = '20119022'
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.listview import ListItemButton
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty, ListProperty
 from kivy.network.urlrequest import UrlRequest
 from kivy.graphics import *
 from Data import Singleton
@@ -42,8 +42,8 @@ class BurndownScreen(Screen):
         with self.canvas:
             Line(points=[100, 100, 200, 100, 100, 200], width=1.0)
 
-    #def request_milestones(self):
-
+    def request_milestones(self):
+        pass
 
 
 class LoginScreen(Screen):
@@ -60,7 +60,7 @@ class LoginScreen(Screen):
     def make_request(self, text_input):
         headers = {'User-Agent': 'timokramer/repodigger'}
         req = UrlRequest(
-            'https://api.github.com/repos/' + text_input + '/issues',
+            'https://api.github.com/repos/' + text_input + '/issues?state=all',
             on_success=self.parse_request,
             on_failure=self.parse_failure,
             on_error=self.parse_error,
@@ -87,19 +87,26 @@ class LoginScreen(Screen):
 
 
 class IssueScreen(Screen):
+    issues_archive = ListProperty(None)
 
     def __init__(self, **kwargs):
         kwargs['cols'] = 1
         super(IssueScreen, self).__init__(**kwargs)
 
     def build_issue_widgets(self, issues):
-        my_item_strings = []
-        for issue in issues:
-            if issue['state'] == 'open':
-                my_item_strings.append(issue['title'])
-        self.issues_list.item_strings = my_item_strings
+        # my_item_strings = []
+        # for issue in issues:
+        #     if issue['state'] == 'open':
+        #         my_item_strings.append(issue['title'])
+        # self.issues_list.item_strings = my_item_strings
+        self.issues_archive = [issue['title'] for issue in issues]
+        # self.issues_list.adapter = ListAdapter(
+        #     data=self.issues_archive,
+        #     cls=IssueButton,
+        #     allow_empty_selection=True
+        # )
         self.issues_list.adapter.data.clear()
-        self.issues_list.adapter.data.extend(my_item_strings)
+        self.issues_list.adapter.data.extend(self.issues_archive)
         self.issues_list._trigger_reset_populate()
 
     def on_burndown_press(self):
