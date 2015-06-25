@@ -7,12 +7,13 @@ __immanr__ = '20119022'
 
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.listview import ListItemButton
+from kivy.uix.listview import ListItemButton, ListView
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.network.urlrequest import UrlRequest
 from kivy.graphics import *
+from kivy.adapters.listadapter import ListAdapter
 from Data import Singleton
-import re, json, Data
+import re
 
 
 class RepodiggerApp(App):
@@ -42,8 +43,8 @@ class BurndownScreen(Screen):
         with self.canvas:
             Line(points=[100, 100, 200, 100, 100, 200], width=1.0)
 
-    #def request_milestones(self):
-
+    def request_milestones(self):
+        pass
 
 
 class LoginScreen(Screen):
@@ -60,7 +61,7 @@ class LoginScreen(Screen):
     def make_request(self, text_input):
         headers = {'User-Agent': 'timokramer/repodigger'}
         req = UrlRequest(
-            'https://api.github.com/repos/' + text_input + '/issues',
+            'https://api.github.com/repos/' + text_input + '/issues?state=all',
             on_success=self.parse_request,
             on_failure=self.parse_failure,
             on_error=self.parse_error,
@@ -71,13 +72,12 @@ class LoginScreen(Screen):
         if req.is_finished:
             print("Request Finished")
             Singleton().set_repo_string(text_input)
-            Singleton().set_issue_json(req.result)
-            print(json.dumps(req.result, sort_keys=True, indent=4, separators=(',', ': ')))
 
-    def parse_request(self, req, results):
+    def parse_request(self, req, result):
+        Singleton().set_issue_json(req.result)
         print('Succeeded requesting Github Issues')
         global_screen_manager.current = 'Issue Screen'
-        global_screen_manager.get_screen('Issue Screen').build_issue_widgets(results)
+        global_screen_manager.get_screen('Issue Screen').build_issue_widgets(Singleton().get_issue_json())
 
     def parse_failure(self, req, result):
         print('There was a problem: "', result['message'], '"')
@@ -93,14 +93,17 @@ class IssueScreen(Screen):
         super(IssueScreen, self).__init__(**kwargs)
 
     def build_issue_widgets(self, issues):
-        my_item_strings = []
-        for issue in issues:
-            if issue['state'] == 'open':
-                my_item_strings.append(issue['title'])
-        self.issues_list.item_strings = my_item_strings
-        self.issues_list.adapter.data.clear()
-        self.issues_list.adapter.data.extend(my_item_strings)
-        self.issues_list._trigger_reset_populate()
+        self.issues_archive = [issue['title'] for issue in issues]
+        self.issues_adapter = ListAdapter(
+            data=self.issues_archive,
+            cls=IssueButton,
+            allow_empty_selection=True
+        )
+        self.add_widget(ListView(adapter=self.issues_adapter))
+        print(self.issues_list)
+
+    def sort_issues(self, reverse):
+        self.issues_adapter.data = sorted(self.issues_archive, reverse=reverse)
 
     def on_burndown_press(self):
         global_screen_manager.current = 'Burndown Screen'
@@ -115,13 +118,16 @@ class IssueScreen(Screen):
 
 
 class IssueButton(ListItemButton):
+    index = -100
+
     def on_detail_press(self):
+        # TODO: beautifying this ugly part
         print(self.parent)
         print(self.parent.parent)
         print(self.parent.parent.parent)
         print(self.parent.parent.parent.parent)
         print(self.parent.parent.parent.parent.parent)
-        self.parent.parent.parent.parent.parent.on_detail_press()
+        self.parent.parent.parent.parent.on_detail_press()
 
 
 class DetailScreen(Screen):

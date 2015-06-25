@@ -52,18 +52,16 @@
         orientation: 'vertical'
         ListView:
             id: issues_list
-            size_hint: 1, .8
-            adapter:
-                ListAdapter(data=[], cls=Repodigger.IssueButton)
+            size: 1, .5
         BoxLayout:
             orientation: 'horizontal'
-            size_hint: 1, .05
+            size_hint: 1, .5
             Button:
-                size_hint: .2, 1
+                size_hint: .5, 1
                 text: "change Repository"
                 on_press: root.on_change_press()
             Button:
-                size_hint: .2, 1
+                size_hint: .5, 1
                 text: "show Burndown"
                 on_press: root.on_burndown_press()
 
