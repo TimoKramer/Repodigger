@@ -40,10 +40,21 @@
             Rectangle:
                 pos: self.pos
                 size: self.size
-        Button:
-            size_hint: .2, .1
-            text: 'Back'
-            on_press: root.on_back_press()
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, .1
+            Button:
+                size_hint: .2, 1
+                text: 'Back'
+                on_press: root.on_back_press()
+            Button:
+                size_hint: .2, 1
+                text: "previous Milestone"
+                on_press: root.previous_milestone()
+            Button:
+                size_hint: .2, 1
+                text: "next Milestone"
+                on_press: root.next_milestone()
 
 <IssueScreen>
     issues_list: issues_list

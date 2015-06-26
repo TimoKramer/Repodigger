@@ -37,9 +37,13 @@ class BurndownScreen(Screen):
         self.parent.current = 'Issue Screen'
 
     def draw_burndown(self):
+        Data.DataSingleton().request_all_milestones()
         self.request_milestones()
         with self.canvas:
-            Line(points=[100, 100, 200, 100, 100, 200], width=1.0)
+            Line(points=[self.parent.width*0.1, self.parent.height*0.2,
+                         self.parent.width*0.1, self.parent.height*0.9,
+                         self.parent.width*0.9, self.parent.height*0.2,
+                         self.parent.width*0.1, self.parent.height*0.2], width=1.0)
 
     def request_milestones(self):
         pass
@@ -115,7 +119,6 @@ class DetailScreen(Screen):
         pass
 
     def on_back_press(self):
-        print("back")
         self.parent.current = 'Issue Screen'
 
 
