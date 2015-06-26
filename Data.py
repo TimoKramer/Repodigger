@@ -30,9 +30,23 @@ class Data:
         return self.issues
 
     def get_all_issues_as_list(self):
-        issues = self.get_issues()
-        all_issues_list = [issue['title'] for issue in issues]
+        all_issues_list = [issue['title'] for issue in self.issues]
         return all_issues_list
+
+    def get_open_issues_as_list(self):
+        open_issues_list = []
+        for issue in self.issues:
+            if issue['state'] == 'open':
+                open_issues_list.append(issue['title'])
+        return open_issues_list
+
+    def get_closed_issues_as_list(self):
+        closed_issues_list = []
+        for issue in self.issues:
+            if issue['state'] == 'closed':
+                closed_issues_list.append(issue['title'])
+        return closed_issues_list
+
 
     def set_issues(self, issues):
         self.issues = issues

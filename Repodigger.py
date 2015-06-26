@@ -61,7 +61,7 @@ class LoginScreen(Screen):
 
     def request_success(self):
         self.parent.current = 'Issue Screen'
-        self.parent.get_screen('Issue Screen').build_issue_widgets()
+        self.parent.get_screen('Issue Screen').build_issue_widgets(Data.DataSingleton().get_all_issues_as_list())
 
 
 class IssueScreen(Screen):
@@ -71,9 +71,9 @@ class IssueScreen(Screen):
         kwargs['cols'] = 1
         super(IssueScreen, self).__init__(**kwargs)
 
-    def build_issue_widgets(self):
+    def build_issue_widgets(self, issues):
         self.issues_list.adapter.data.clear()
-        self.issues_list.adapter.data.extend(Data.DataSingleton().get_all_issues_as_list())
+        self.issues_list.adapter.data.extend(issues)
         self.issues_list._trigger_reset_populate()
 
     def on_burndown_press(self):
@@ -86,6 +86,15 @@ class IssueScreen(Screen):
     def on_detail_press(self):
         self.parent.current = 'Detail Screen'
         self.parent.get_screen('Detail Screen').populate_details()
+
+    def on_show_all_press(self):
+        self.build_issue_widgets(Data.DataSingleton().get_all_issues_as_list())
+
+    def on_show_open_press(self):
+        self.build_issue_widgets(Data.DataSingleton().get_open_issues_as_list())
+
+    def on_show_closed_press(self):
+        self.build_issue_widgets(Data.DataSingleton().get_closed_issues_as_list())
 
 
 class IssueButton(ListItemButton):

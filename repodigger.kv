@@ -50,9 +50,24 @@
     BoxLayout:
         size_hint: 1, 1
         orientation: 'vertical'
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, .1
+            Button:
+                size_hint: .2, 1
+                text: "show all Issues"
+                on_press: root.on_show_all_press()
+            Button:
+                size_hint: .2, 1
+                text: "show open Issues"
+                on_press: root.on_show_open_press()
+            Button:
+                size_hint: .2, 1
+                text: "show closed Issues"
+                on_press: root.on_show_closed_press()
         ListView:
             id: issues_list
-            size_hint: 1, .9
+            size_hint: 1, .8
             adapter:
                 ListAdapter(data=root.issues_archive, cls=Repodigger.IssueButton)
         BoxLayout:
