@@ -33,13 +33,29 @@
 <BurndownScreen>:
     BoxLayout:
         id: burndown_screen
-        orientation: 'horizontal'
-        canvas:
-            Color:
-                rgba: .1, .1, .1, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, .9
+            canvas:
+                Color:
+                    rgba: .1, .1, .1, 1
+                Line:
+                    id: target_line
+                Line:
+                    id: actual_line
+            BoxLayout:
+                size_hint: 1, .1
+                Label:
+                    font_size: 20
+                    text: "Milestone"
+                    center_x: root.width/8
+                    top: root.top - root.width + 10
+                Label:
+                    font_size: 20
+                    text: "Days left"
+                    center_x: root.width*7/8
+                    top: root.top - root.width + 10
         BoxLayout:
             orientation: 'horizontal'
             size_hint: 1, .1

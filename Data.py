@@ -49,6 +49,24 @@ class Data:
                 closed_issues_list.append(issue['title'])
         return closed_issues_list
 
+    def get_issues_with_delta(self, title, created):
+        closed_issues = []
+        for issue in self.get_issues():
+            # TODO: Issues die keine Milestones haben
+            if issue['milestone']['title'] == title:
+                new_issue = {}
+                new_issue['title'] = issue['title']
+                if issue['closed_at'] is not None:
+                    new_issue['state'] = 'closed'
+                    closed_at = datetime.datetime.strptime(issue['closed_at'], "%Y-%m-%dT%H:%M:%SZ")
+                    timedelta = closed_at - created
+                    new_issue['timedelta'] = abs(timedelta).days
+                else:
+                    new_issue['state'] = 'open'
+                    new_issue['timedelta'] = None
+                closed_issues.append(new_issue)
+        return closed_issues
+
     def set_milestones(self, milestones):
         self._milestones = milestones
 
@@ -62,13 +80,27 @@ class Data:
                 milestones_list.append(milestone)
         return milestones_list
 
-    def get_days_of_milestones(self):
+    def get_milestone_data(self):
+        milestone_data = []
         # TODO: What time's best? What time uses Github?
         for milestone in self.get_open_milestones():
+            new_milestone = {'title': milestone['title']}
+            new_milestone['created_at'] =  datetime.datetime.strptime(milestone['created_at'], "%Y-%m-%dT%H:%M:%SZ")
             if milestone['due_on'] == None:
-                print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                new_milestone['due_on'] = datetime.datetime.now()
+                new_milestone['has_due_date'] = 'True'
             else:
-                print(datetime.datetime.strptime(milestone['due_on'], "%Y-%m-%dT%H:%M:%SZ"))
+                new_milestone['due_on'] = datetime.datetime.strptime(milestone['due_on'], "%Y-%m-%dT%H:%M:%SZ")
+                new_milestone['has_due_date'] = False
+            # timedelta
+            diff = new_milestone['due_on'] - new_milestone['created_at']
+            new_milestone['timedelta'] = diff.days
+            new_milestone['total_issues'] = milestone['open_issues'] + milestone['closed_issues']
+            new_milestone['open_issues'] = milestone['open_issues']
+            new_milestone['issue_closings'] = self.get_issues_with_delta(milestone['title'], new_milestone['created_at'])
+            # append extracted milestone-data as dict to list
+            milestone_data.append(new_milestone)
+        return milestone_data
 
     def request_all_issues(self, rd, text_input):
         headers = {'User-Agent': 'timokramer/repodigger'}
@@ -112,7 +144,7 @@ class Data:
         parsed = True
         if parsed:
             self.set_milestones(result)
-            self.get_days_of_milestones()
+            self.get_milestone_data()
 
     def parse_failure(self, req, result):
         print('There was a problem: "', result['message'], '"')

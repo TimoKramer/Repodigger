@@ -30,23 +30,51 @@ class Manager(ScreenManager):
 
 
 class BurndownScreen(Screen):
+    milestone_data = []
+    milestone_index = 0
+
     def __init__(self, **kwargs):
         super(BurndownScreen, self).__init__(**kwargs)
 
     def on_back_press(self):
         self.parent.current = 'Issue Screen'
 
+    def previous_milestone(self):
+        try:
+            self.milestone_index -= 1
+            self.generate_coordinates(self.milestone_data[self.milestone_index])
+        except IndexError:
+            print('No more Milestones:(')
+
+    def next_milestone(self):
+        try:
+            self.milestone_index += 1
+            self.generate_coordinates(self.milestone_data[self.milestone_index])
+        except IndexError:
+            print('No more Milestones:(')
+
+    def generate_coordinates(self, milestone_data):
+        print(milestone_data)
+        try:
+            width = self.parent.width/milestone_data['timedelta']
+        except ZeroDivisionError:
+            width = self.parent.width/2
+        try:
+            height = self.parent.height/milestone_data['total_issues']
+        except ZeroDivisionError:
+            height = self.parent.height/2
+
     def draw_burndown(self):
         Data.DataSingleton().request_all_milestones()
-        self.request_milestones()
+        self.milestone_data = Data.DataSingleton().get_milestone_data()
+        self.generate_coordinates(self.milestone_data[self.milestone_index])
         with self.canvas:
-            Line(points=[self.parent.width*0.1, self.parent.height*0.2,
+            self.target_line = Line(points=[self.parent.width*0.1, self.parent.height*0.2,
                          self.parent.width*0.1, self.parent.height*0.9,
                          self.parent.width*0.9, self.parent.height*0.2,
                          self.parent.width*0.1, self.parent.height*0.2], width=1.0)
-
-    def request_milestones(self):
-        pass
+            self.actual_line = Line(points=[self.parent.width*0.1, self.parent.height*0.9,
+                         self.parent.width*0.2, self.parent.height*0.8], width=3.0)
 
 
 class LoginScreen(Screen):
