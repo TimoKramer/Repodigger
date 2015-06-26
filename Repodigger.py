@@ -9,10 +9,13 @@ from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.listview import ListItemButton
 from kivy.properties import ObjectProperty, ListProperty
+from kivy.uix.listview import ListItemButton, ListView
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.network.urlrequest import UrlRequest
 from kivy.graphics import *
+from kivy.adapters.listadapter import ListAdapter
 from Data import Singleton
-import re, json, Data
+import re, json
 
 
 class RepodiggerApp(App):
@@ -74,10 +77,11 @@ class LoginScreen(Screen):
             Singleton().set_issues(req.result)
             print(json.dumps(req.result, sort_keys=True, indent=4, separators=(',', ': ')))
 
-    def parse_request(self, req, results):
+    def parse_request(self, req, result):
+        Singleton().set_issue_json(req.result)
         print('Succeeded requesting Github Issues')
         global_screen_manager.current = 'Issue Screen'
-        global_screen_manager.get_screen('Issue Screen').build_issue_widgets(results)
+        global_screen_manager.get_screen('Issue Screen').build_issue_widgets(Singleton().get_issue_json())
 
     def parse_failure(self, req, result):
         print('There was a problem: "', result['message'], '"')
@@ -98,6 +102,16 @@ class IssueScreen(Screen):
         self.issues_list.adapter.data.clear()
         self.issues_list.adapter.data.extend(self.issues_archive)
         self.issues_list._trigger_reset_populate()
+        self.issues_adapter = ListAdapter(
+            data=self.issues_archive,
+            cls=IssueButton,
+            allow_empty_selection=True
+        )
+        self.add_widget(ListView(adapter=self.issues_adapter))
+        print(self.issues_list)
+
+    def sort_issues(self, reverse):
+        self.issues_adapter.data = sorted(self.issues_archive, reverse=reverse)
 
     def on_burndown_press(self):
         global_screen_manager.current = 'Burndown Screen'
@@ -112,13 +126,16 @@ class IssueScreen(Screen):
 
 
 class IssueButton(ListItemButton):
+    index = -100
+
     def on_detail_press(self):
+        # TODO: beautifying this ugly part
         print(self.parent)
         print(self.parent.parent)
         print(self.parent.parent.parent)
         print(self.parent.parent.parent.parent)
         print(self.parent.parent.parent.parent.parent)
-        self.parent.parent.parent.parent.parent.on_detail_press()
+        self.parent.parent.parent.parent.on_detail_press()
 
 
 class DetailScreen(Screen):
