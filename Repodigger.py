@@ -11,7 +11,6 @@ from kivy.uix.listview import ListItemButton
 from kivy.properties import ObjectProperty, ListProperty
 from kivy.network.urlrequest import UrlRequest
 from kivy.graphics import *
-from Data import Singleton
 import re, json, Data
 
 
@@ -35,7 +34,7 @@ class BurndownScreen(Screen):
         super(BurndownScreen, self).__init__(**kwargs)
 
     def on_back_press(self):
-        global_screen_manager.current = 'Issue Screen'
+        self.parent.current = 'Issue Screen'
 
     def draw_burndown(self):
         self.request_milestones()
@@ -58,32 +57,13 @@ class LoginScreen(Screen):
             print("not a valid repo!")
 
     def make_request(self, text_input):
-        headers = {'User-Agent': 'timokramer/repodigger'}
-        req = UrlRequest(
-            'https://api.github.com/repos/' + text_input + '/issues?state=all',
-            on_success=self.parse_request,
-            on_failure=self.parse_failure,
-            on_error=self.parse_error,
-            req_headers=headers,
-            debug=True
-        )
-        req.wait()
-        if req.is_finished:
-            print("Request Finished")
-            Singleton().set_repo_string(text_input)
-            Singleton().set_issues(req.result)
-            print(json.dumps(req.result, sort_keys=True, indent=4, separators=(',', ': ')))
+        Data.DataSingleton().request_all_issues(self, text_input)
 
-    def parse_request(self, req, results):
-        print('Succeeded requesting Github Issues')
-        global_screen_manager.current = 'Issue Screen'
-        global_screen_manager.get_screen('Issue Screen').build_issue_widgets(results)
-
-    def parse_failure(self, req, result):
-        print('There was a problem: "', result['message'], '"')
-
-    def parse_error(self, req, error):
-        print('There was an error: ', error)
+    def request_success(self):
+        self.parent.current = 'Issue Screen'
+        self.parent.get_screen('Issue Screen').build_issue_widgets()
+        # global_screen_manager.current = 'Issue Screen'
+        # global_screen_manager.get_screen('Issue Screen').build_issue_widgets()
 
 
 class IssueScreen(Screen):
@@ -93,22 +73,24 @@ class IssueScreen(Screen):
         kwargs['cols'] = 1
         super(IssueScreen, self).__init__(**kwargs)
 
-    def build_issue_widgets(self, issues):
+    def build_issue_widgets(self):
+        issues = Data.DataSingleton().get_issues()
+        print(issues)
         self.issues_archive = [issue['title'] for issue in issues]
         self.issues_list.adapter.data.clear()
         self.issues_list.adapter.data.extend(self.issues_archive)
         self.issues_list._trigger_reset_populate()
 
     def on_burndown_press(self):
-        global_screen_manager.current = 'Burndown Screen'
-        global_screen_manager.get_screen('Burndown Screen').draw_burndown()
+        self.parent.current = 'Burndown Screen'
+        self.parent.get_screen('Burndown Screen').draw_burndown()
 
     def on_change_press(self):
-        global_screen_manager.current = 'Login Screen'
+        self.parent.current = 'Login Screen'
 
     def on_detail_press(self):
-        global_screen_manager.current = 'Detail Screen'
-        global_screen_manager.get_screen('Detail Screen').populate_details()
+        self.parent.current = 'Detail Screen'
+        self.parent.get_screen('Detail Screen').populate_details()
 
 
 class IssueButton(ListItemButton):
@@ -130,7 +112,7 @@ class DetailScreen(Screen):
 
     def on_back_press(self):
         print("back")
-        global_screen_manager.current = 'Issue Screen'
+        self.parent.current = 'Issue Screen'
 
 
 if __name__ == '__main__':
