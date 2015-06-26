@@ -71,7 +71,7 @@ class LoginScreen(Screen):
         if req.is_finished:
             print("Request Finished")
             Singleton().set_repo_string(text_input)
-            Singleton().set_issue_json(req.result)
+            Singleton().set_issues(req.result)
             print(json.dumps(req.result, sort_keys=True, indent=4, separators=(',', ': ')))
 
     def parse_request(self, req, results):
@@ -94,17 +94,7 @@ class IssueScreen(Screen):
         super(IssueScreen, self).__init__(**kwargs)
 
     def build_issue_widgets(self, issues):
-        # my_item_strings = []
-        # for issue in issues:
-        #     if issue['state'] == 'open':
-        #         my_item_strings.append(issue['title'])
-        # self.issues_list.item_strings = my_item_strings
         self.issues_archive = [issue['title'] for issue in issues]
-        # self.issues_list.adapter = ListAdapter(
-        #     data=self.issues_archive,
-        #     cls=IssueButton,
-        #     allow_empty_selection=True
-        # )
         self.issues_list.adapter.data.clear()
         self.issues_list.adapter.data.extend(self.issues_archive)
         self.issues_list._trigger_reset_populate()

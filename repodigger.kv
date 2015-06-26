@@ -52,12 +52,12 @@
         orientation: 'vertical'
         ListView:
             id: issues_list
-            size_hint: 1, .8
+            size_hint: 1, .9
             adapter:
                 ListAdapter(data=root.issues_archive, cls=Repodigger.IssueButton)
         BoxLayout:
             orientation: 'horizontal'
-            size_hint: 1, .05
+            size_hint: 1, .1
             Button:
                 size_hint: .2, 1
                 text: "change Repository"

@@ -13,7 +13,7 @@ class Data:
         self.__dict__ = self._shared_state
 
     repo_string = ''
-    issue_json = ''
+    issues = ''
 
     def foo(self):
         return id(self)
@@ -22,13 +22,15 @@ class Data:
         return self.repo_string
 
     def set_repo_string(self, repo_string):
+        print(repo_string)
         self.repo_string = repo_string
 
-    def get_issue_json(self):
-        return self.issue_json
+    def get_issues(self):
+        return self.issues
 
-    def set_issue_json(self, issue_json):
-        self.issue_json = issue_json
+    def set_issues(self, issues):
+        print(issues)
+        self.issues = issues
 
 
 class Singleton(Data):
