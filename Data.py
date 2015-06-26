@@ -6,7 +6,7 @@ __immanr__ = '20119022'
 
 
 from kivy.network.urlrequest import UrlRequest
-import json, Repodigger
+from kivy.properties import ListProperty
 
 
 class Data:
@@ -19,20 +19,22 @@ class Data:
     repo_string = ''
     issues = ''
 
-    def foo(self):
-        return id(self)
-
     def get_repo_string(self):
         return self.repo_string
 
     def set_repo_string(self, repo_string):
         self.repo_string = repo_string
+        print(type(self.repo_string))
 
     def get_issues(self):
         return self.issues
 
+    def get_all_issues_as_list(self):
+        issues = self.get_issues()
+        all_issues_list = [issue['title'] for issue in issues]
+        return all_issues_list
+
     def set_issues(self, issues):
-        print(issues)
         self.issues = issues
 
     def request_all_issues(self, rd, text_input):

@@ -62,8 +62,6 @@ class LoginScreen(Screen):
     def request_success(self):
         self.parent.current = 'Issue Screen'
         self.parent.get_screen('Issue Screen').build_issue_widgets()
-        # global_screen_manager.current = 'Issue Screen'
-        # global_screen_manager.get_screen('Issue Screen').build_issue_widgets()
 
 
 class IssueScreen(Screen):
@@ -74,11 +72,8 @@ class IssueScreen(Screen):
         super(IssueScreen, self).__init__(**kwargs)
 
     def build_issue_widgets(self):
-        issues = Data.DataSingleton().get_issues()
-        print(issues)
-        self.issues_archive = [issue['title'] for issue in issues]
         self.issues_list.adapter.data.clear()
-        self.issues_list.adapter.data.extend(self.issues_archive)
+        self.issues_list.adapter.data.extend(Data.DataSingleton().get_all_issues_as_list())
         self.issues_list._trigger_reset_populate()
 
     def on_burndown_press(self):
