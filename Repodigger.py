@@ -43,7 +43,8 @@ class BurndownScreen(Screen):
         self.draw_burndown()
 
     def draw_text(self):
-        self.ids.get('milestone_label').text = self.milestone_data[self.milestone_index]['title']
+        current_milestone = self.get_current_milestone()
+        self.ids.get('milestone_label').text = current_milestone['title']
         actual_milestone = self.milestone_data[self.milestone_index]
         closed_issues = actual_milestone['total_issues']-actual_milestone['open_issues']
         total_issues = actual_milestone['total_issues']
@@ -64,6 +65,12 @@ class BurndownScreen(Screen):
 
     def on_back_press(self):
         self.parent.current = 'Issue Screen'
+
+    def get_current_milestone(self):
+        try:
+            return self.milestone_data[self.milestone_index]
+        except IndexError:
+            print('No milestone with index ' + str(self.milestone_index))
 
     def previous_milestone(self):
         try:
@@ -94,8 +101,8 @@ class BurndownScreen(Screen):
         return self.parent.width*0.1, self.parent.height*0.1
 
     def get_points_for_actual_line(self):
-        width_of_issue = self.get_width_height_of_single_issue(self.milestone_data[self.milestone_index])[0]
-        height_of_issue = self.get_width_height_of_single_issue(self.milestone_data[self.milestone_index])[1]
+        width_of_issue = self.get_width_height_of_single_issue(self.get_current_milestone())[0]
+        height_of_issue = self.get_width_height_of_single_issue(self.get_current_milestone())[1]
         position_offset_x = self.get_offset_x_y_burndown()[0]
         position_offset_y = self.get_offset_x_y_burndown()[1]
         daylist = self.get_issue_count()
@@ -106,7 +113,7 @@ class BurndownScreen(Screen):
         return coordinate_list
 
     def get_issue_count(self):
-        actual_milestone = self.milestone_data[self.milestone_index]
+        actual_milestone = self.get_current_milestone()
         days_of_milestone = actual_milestone['days_of_milestone']
         total_issues_of_milestone = actual_milestone['total_issues']
         issue_counter_list = [None for _ in range(days_of_milestone)]
@@ -118,7 +125,7 @@ class BurndownScreen(Screen):
 
     def get_issues_closed_on_day(self, day):
         counter = 0
-        actual_milestone = self.milestone_data[self.milestone_index]
+        actual_milestone = self.get_current_milestone()
         for issues_closing in actual_milestone['closed_issues']:
             if issues_closing['closing_day'] is day:
                 counter += 1
