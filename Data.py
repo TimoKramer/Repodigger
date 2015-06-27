@@ -49,22 +49,22 @@ class Data:
                 closed_issues_list.append(issue['title'])
         return closed_issues_list
 
-    def get_issues_with_delta(self, title, created):
+    def get_issues_with_days(self, milestone_title, milestone_created):
         closed_issues = []
         for issue in self.get_issues():
-            # TODO: Issues die keine Milestones haben
-            if issue['milestone']['title'] == title:
-                new_issue = {}
-                new_issue['title'] = issue['title']
-                if issue['closed_at'] is not None:
-                    new_issue['state'] = 'closed'
-                    closed_at = datetime.datetime.strptime(issue['closed_at'], "%Y-%m-%dT%H:%M:%SZ")
-                    timedelta = closed_at - created
-                    new_issue['timedelta'] = abs(timedelta).days
-                else:
-                    new_issue['state'] = 'open'
-                    new_issue['timedelta'] = None
-                closed_issues.append(new_issue)
+            # issues without milestone are not drawn
+            if issue['milestone'] is not None:
+                if issue['milestone']['title'] == milestone_title:
+                    new_issue = {'title': issue['title']}
+                    if issue['closed_at'] is not None:
+                        new_issue['state'] = 'closed'
+                        issue_closed_at = datetime.datetime.strptime(issue['closed_at'], "%Y-%m-%dT%H:%M:%SZ")
+                        closing_day = issue_closed_at - milestone_created
+                        new_issue['closing_day'] = closing_day.days
+                    else:
+                        new_issue['state'] = 'open'
+                        new_issue['closing_day'] = None
+                    closed_issues.append(new_issue)
         return closed_issues
 
     def set_milestones(self, milestones):
@@ -85,19 +85,22 @@ class Data:
         # TODO: What time's best? What time uses Github?
         for milestone in self.get_open_milestones():
             new_milestone = {'title': milestone['title']}
-            new_milestone['created_at'] =  datetime.datetime.strptime(milestone['created_at'], "%Y-%m-%dT%H:%M:%SZ")
-            if milestone['due_on'] == None:
+            new_milestone['created_at'] = datetime.datetime.strptime(milestone['created_at'], "%Y-%m-%dT%H:%M:%SZ")
+            if milestone['due_on'] is None:
                 new_milestone['due_on'] = datetime.datetime.now()
-                new_milestone['has_due_date'] = 'True'
+                new_milestone['has_due_date'] = False
+            elif datetime.datetime.strptime(milestone['due_on'], "%Y-%m-%dT%H:%M:%SZ") < datetime.datetime.now():
+                new_milestone['due_on'] = datetime.datetime.now()
+                new_milestone['has_due_date'] = True
             else:
                 new_milestone['due_on'] = datetime.datetime.strptime(milestone['due_on'], "%Y-%m-%dT%H:%M:%SZ")
-                new_milestone['has_due_date'] = False
-            # timedelta
+                new_milestone['has_due_date'] = True
+            # days_of_milestone
             diff = new_milestone['due_on'] - new_milestone['created_at']
-            new_milestone['timedelta'] = diff.days
+            new_milestone['days_of_milestone'] = diff.days
             new_milestone['total_issues'] = milestone['open_issues'] + milestone['closed_issues']
             new_milestone['open_issues'] = milestone['open_issues']
-            new_milestone['issue_closings'] = self.get_issues_with_delta(milestone['title'], new_milestone['created_at'])
+            new_milestone['closed_issues'] = self.get_issues_with_days(milestone['title'], new_milestone['created_at'])
             # append extracted milestone-data as dict to list
             milestone_data.append(new_milestone)
         return milestone_data

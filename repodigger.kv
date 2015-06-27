@@ -34,7 +34,8 @@
     BoxLayout:
         id: burndown_screen
         orientation: 'vertical'
-        BoxLayout:
+        Widget:
+            id: canvas_widget
             orientation: 'horizontal'
             size_hint: 1, .9
             canvas:
@@ -44,18 +45,20 @@
                     id: target_line
                 Line:
                     id: actual_line
-            BoxLayout:
-                size_hint: 1, .1
-                Label:
-                    font_size: 20
-                    text: "Milestone"
-                    center_x: root.width/8
-                    top: root.top - root.width + 10
-                Label:
-                    font_size: 20
-                    text: "Days left"
-                    center_x: root.width*7/8
-                    top: root.top - root.width + 10
+        BoxLayout:
+            size_hint: 1, .1
+            Label:
+                id: milestone_label
+                font_size: 20
+                text: "Milestone"
+                center_x: root.width/8
+                top: root.top - root.width + 10
+            Label:
+                id: closed_label
+                font_size: 20
+                text: "Closed: "
+                center_x: root.width*7/8
+                top: root.top - root.width + 10
         BoxLayout:
             orientation: 'horizontal'
             size_hint: 1, .1

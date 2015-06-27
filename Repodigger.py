@@ -11,7 +11,7 @@ from kivy.uix.listview import ListItemButton
 from kivy.properties import ObjectProperty, ListProperty
 from kivy.network.urlrequest import UrlRequest
 from kivy.graphics import *
-import re, json, Data
+import re, json, Data, datetime
 
 
 class RepodiggerApp(App):
@@ -36,45 +36,93 @@ class BurndownScreen(Screen):
     def __init__(self, **kwargs):
         super(BurndownScreen, self).__init__(**kwargs)
 
+    def initialize_burndown(self):
+        self.milestone_index = 0
+        Data.DataSingleton().request_all_milestones()
+        self.milestone_data = Data.DataSingleton().get_milestone_data()
+        self.draw_burndown()
+
+    def draw_text(self):
+        self.ids.get('milestone_label').text = self.milestone_data[self.milestone_index]['title']
+        actual_milestone = self.milestone_data[self.milestone_index]
+        closed_issues = actual_milestone['total_issues']-actual_milestone['open_issues']
+        total_issues = actual_milestone['total_issues']
+        self.ids.get('closed_label').text = 'Closed: ' + str(closed_issues) + '/' + str(total_issues)
+
+    def draw_burndown(self):
+        canvas_widget = self.ids.get('canvas_widget')
+        canvas_widget.canvas.clear()
+        self.draw_text()
+        with self.canvas:
+            self.target_line = Line(points=[self.parent.width*0.1, self.parent.height*0.2,
+                         self.parent.width*0.1, self.parent.height*0.9,
+                         self.parent.width*0.9, self.parent.height*0.2,
+                         self.parent.width*0.1, self.parent.height*0.2], width=1.0)
+            self.actual_line = Line(points=self.get_points_for_actual_line(), width=3.0)
+        print(self.target_line.points)
+        print(self.actual_line.points)
+
     def on_back_press(self):
         self.parent.current = 'Issue Screen'
 
     def previous_milestone(self):
         try:
             self.milestone_index -= 1
-            self.generate_coordinates(self.milestone_data[self.milestone_index])
+            self.draw_burndown()
         except IndexError:
             print('No more Milestones:(')
 
     def next_milestone(self):
         try:
             self.milestone_index += 1
-            self.generate_coordinates(self.milestone_data[self.milestone_index])
+            self.draw_burndown()
         except IndexError:
             print('No more Milestones:(')
 
-    def generate_coordinates(self, milestone_data):
-        print(milestone_data)
+    def get_width_height_of_single_issue(self, milestone_data):
         try:
-            width = self.parent.width/milestone_data['timedelta']
+            issue_width = self.parent.width*0.8/milestone_data['days_of_milestone']
         except ZeroDivisionError:
-            width = self.parent.width/2
+            issue_width = self.parent.width*0.8/2
         try:
-            height = self.parent.height/milestone_data['total_issues']
+            issue_height = self.parent.height*0.8/milestone_data['total_issues']
         except ZeroDivisionError:
-            height = self.parent.height/2
+            issue_height = self.parent.height*0.8/2
+        return issue_width, issue_height
 
-    def draw_burndown(self):
-        Data.DataSingleton().request_all_milestones()
-        self.milestone_data = Data.DataSingleton().get_milestone_data()
-        self.generate_coordinates(self.milestone_data[self.milestone_index])
-        with self.canvas:
-            self.target_line = Line(points=[self.parent.width*0.1, self.parent.height*0.2,
-                         self.parent.width*0.1, self.parent.height*0.9,
-                         self.parent.width*0.9, self.parent.height*0.2,
-                         self.parent.width*0.1, self.parent.height*0.2], width=1.0)
-            self.actual_line = Line(points=[self.parent.width*0.1, self.parent.height*0.9,
-                         self.parent.width*0.2, self.parent.height*0.8], width=3.0)
+    def get_offset_x_y_burndown(self):
+        return self.parent.width*0.1, self.parent.height*0.1
+
+    def get_points_for_actual_line(self):
+        width_of_issue = self.get_width_height_of_single_issue(self.milestone_data[self.milestone_index])[0]
+        height_of_issue = self.get_width_height_of_single_issue(self.milestone_data[self.milestone_index])[1]
+        position_offset_x = self.get_offset_x_y_burndown()[0]
+        position_offset_y = self.get_offset_x_y_burndown()[1]
+        daylist = self.get_issue_count()
+        coordinate_list = []
+        for day in range(len(daylist)):
+            coordinate_list.append(day*width_of_issue + position_offset_x)
+            coordinate_list.append(daylist[day]*height_of_issue + position_offset_y)
+        return coordinate_list
+
+    def get_issue_count(self):
+        actual_milestone = self.milestone_data[self.milestone_index]
+        days_of_milestone = actual_milestone['days_of_milestone']
+        total_issues_of_milestone = actual_milestone['total_issues']
+        issue_counter_list = [None for _ in range(days_of_milestone)]
+        issues_left_of_milestone = total_issues_of_milestone
+        for i in range(days_of_milestone):
+            issues_left_of_milestone -= self.get_issues_closed_on_day(i)
+            issue_counter_list[i] = issues_left_of_milestone
+        return issue_counter_list
+
+    def get_issues_closed_on_day(self, day):
+        counter = 0
+        actual_milestone = self.milestone_data[self.milestone_index]
+        for issues_closing in actual_milestone['closed_issues']:
+            if issues_closing['closing_day'] is day:
+                counter += 1
+        return counter
 
 
 class LoginScreen(Screen):
@@ -110,7 +158,7 @@ class IssueScreen(Screen):
 
     def on_burndown_press(self):
         self.parent.current = 'Burndown Screen'
-        self.parent.get_screen('Burndown Screen').draw_burndown()
+        self.parent.get_screen('Burndown Screen').initialize_burndown()
 
     def on_change_press(self):
         self.parent.current = 'Login Screen'
@@ -131,11 +179,6 @@ class IssueScreen(Screen):
 
 class IssueButton(ListItemButton):
     def on_detail_press(self):
-        print(self.parent)
-        print(self.parent.parent)
-        print(self.parent.parent.parent)
-        print(self.parent.parent.parent.parent)
-        print(self.parent.parent.parent.parent.parent)
         self.parent.parent.parent.parent.parent.on_detail_press()
 
 
