@@ -103,7 +103,7 @@ class Data:
             new_milestone['closed_issues'] = self.get_issues_with_days(milestone['title'], new_milestone['created_at'])
             # append extracted milestone-data as dict to list
             milestone_data.append(new_milestone)
-            print(milestone_data)
+            #print(milestone_data)
         return milestone_data
 
     def request_all_issues(self, rd, text_input):

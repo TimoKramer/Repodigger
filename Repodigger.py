@@ -40,17 +40,17 @@ class BurndownScreen(Screen):
         self.milestone_index = 0
         Data.DataSingleton().request_all_milestones()
         self.milestone_data = Data.DataSingleton().get_milestone_data()
+        self.draw_target_line()
         if self.milestone_data:
             self.draw_burndown()
         else:
             self.draw_not_available()
 
     def draw_burndown(self):
-        canvas_widget = self.ids.get('canvas_widget')
-        canvas_widget.canvas.clear()
+        print('Milestone ', self.milestone_index+1, '/', len(self.milestone_data))
         if self.get_current_milestone():
             self.draw_text()
-            self.draw_lines()
+            self.draw_actual_line()
 
     def draw_text(self):
         current_milestone = self.get_current_milestone()
@@ -60,21 +60,28 @@ class BurndownScreen(Screen):
         total_issues = actual_milestone['total_issues']
         self.ids.get('closed_label').text = 'Closed: ' + str(closed_issues) + '/' + str(total_issues)
 
-    def draw_lines(self):
+    def draw_target_line(self):
         with self.canvas:
             self.target_line = Line(points=[self.parent.width*0.1, self.parent.height*0.2,
                          self.parent.width*0.1, self.parent.height*0.9,
                          self.parent.width*0.9, self.parent.height*0.2,
                          self.parent.width*0.1, self.parent.height*0.2], width=1.0)
+
+    def draw_actual_line(self):
+        with self.canvas:
             self.actual_line = Line(points=self.get_points_for_actual_line(), width=3.0)
-        print(self.target_line.points)
-        print(self.actual_line.points)
 
     def draw_not_available(self):
-        not_available = Label(text='No Milestone available', font_size='20sp', pos_hint={'center_x': 1, 'center_y': 1})
-        self.ids.get('text_widget').remove_widget(self.ids.get('milestone_label'))
-        self.ids.get('text_widget').remove_widget(self.ids.get('closed_label'))
+        not_available = Label(text='No Milestone available', font_size='20sp', pos_hint={'center_x': 1, 'center_y': 1}, id='no_milestone')
+        self.ids.get('text_widget').clear_widgets()
+        self.update_line()
         self.ids.get('text_widget').add_widget(not_available)
+
+    def update_line(self):
+        try:
+            self.canvas.remove(self.actual_line)
+        except AttributeError:
+            pass
 
     def on_back_press(self):
         self.parent.current = 'Issue Screen'
@@ -83,22 +90,19 @@ class BurndownScreen(Screen):
         try:
             return self.milestone_data[self.milestone_index]
         except IndexError:
-            print('No milestone with index ' + str(self.milestone_index))
             return False
 
     def previous_milestone(self):
-        try:
+        if self.milestone_index > 0:
             self.milestone_index -= 1
+            self.update_line()
             self.draw_burndown()
-        except IndexError:
-            print('No more Milestones:(')
 
     def next_milestone(self):
-        try:
+        if self.milestone_index < len(self.milestone_data)-1:
             self.milestone_index += 1
+            self.update_line()
             self.draw_burndown()
-        except IndexError:
-            print('No more Milestones:(')
 
     def get_width_height_of_single_issue(self, milestone_data):
         try:
