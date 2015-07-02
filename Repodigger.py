@@ -8,8 +8,8 @@ __immanr__ = '20119022'
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.listview import ListItemButton
+from kivy.uix.label import Label
 from kivy.properties import ObjectProperty, ListProperty
-from kivy.network.urlrequest import UrlRequest
 from kivy.graphics import *
 import re, json, Data, datetime
 
@@ -40,7 +40,17 @@ class BurndownScreen(Screen):
         self.milestone_index = 0
         Data.DataSingleton().request_all_milestones()
         self.milestone_data = Data.DataSingleton().get_milestone_data()
-        self.draw_burndown()
+        if self.milestone_data:
+            self.draw_burndown()
+        else:
+            self.draw_not_available()
+
+    def draw_burndown(self):
+        canvas_widget = self.ids.get('canvas_widget')
+        canvas_widget.canvas.clear()
+        if self.get_current_milestone():
+            self.draw_text()
+            self.draw_lines()
 
     def draw_text(self):
         current_milestone = self.get_current_milestone()
@@ -50,10 +60,7 @@ class BurndownScreen(Screen):
         total_issues = actual_milestone['total_issues']
         self.ids.get('closed_label').text = 'Closed: ' + str(closed_issues) + '/' + str(total_issues)
 
-    def draw_burndown(self):
-        canvas_widget = self.ids.get('canvas_widget')
-        canvas_widget.canvas.clear()
-        self.draw_text()
+    def draw_lines(self):
         with self.canvas:
             self.target_line = Line(points=[self.parent.width*0.1, self.parent.height*0.2,
                          self.parent.width*0.1, self.parent.height*0.9,
@@ -63,6 +70,12 @@ class BurndownScreen(Screen):
         print(self.target_line.points)
         print(self.actual_line.points)
 
+    def draw_not_available(self):
+        not_available = Label(text='No Milestone available', font_size='20sp', pos_hint={'center_x': 1, 'center_y': 1})
+        self.ids.get('text_widget').remove_widget(self.ids.get('milestone_label'))
+        self.ids.get('text_widget').remove_widget(self.ids.get('closed_label'))
+        self.ids.get('text_widget').add_widget(not_available)
+
     def on_back_press(self):
         self.parent.current = 'Issue Screen'
 
@@ -71,6 +84,7 @@ class BurndownScreen(Screen):
             return self.milestone_data[self.milestone_index]
         except IndexError:
             print('No milestone with index ' + str(self.milestone_index))
+            return False
 
     def previous_milestone(self):
         try:
