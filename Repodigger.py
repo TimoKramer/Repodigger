@@ -84,6 +84,7 @@ class BurndownScreen(Screen):
             pass
 
     def on_back_press(self):
+        self.update_line()
         self.parent.current = 'Issue Screen'
 
     def get_current_milestone(self):
@@ -139,6 +140,7 @@ class BurndownScreen(Screen):
         for i in range(days_of_milestone):
             issues_left_of_milestone -= self.get_issues_closed_on_day(i)
             issue_counter_list[i] = issues_left_of_milestone
+        print(issue_counter_list)
         return issue_counter_list
 
     def get_issues_closed_on_day(self, day):
