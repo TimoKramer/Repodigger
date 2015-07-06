@@ -62,10 +62,10 @@ class BurndownScreen(Screen):
 
     def draw_target_line(self):
         with self.canvas:
-            self.target_line = Line(points=[self.parent.width*0.1, self.parent.height*0.2,
-                         self.parent.width*0.1, self.parent.height*0.9,
-                         self.parent.width*0.9, self.parent.height*0.2,
-                         self.parent.width*0.1, self.parent.height*0.2], width=1.0)
+            self.target_line = Line(points=[self.parent.width*0.1, self.parent.height*0.1,
+                                            self.parent.width*0.1, self.parent.height*0.9,
+                                            self.parent.width*0.9, self.parent.height*0.1,
+                                            self.parent.width*0.1, self.parent.height*0.1], width=1.0)
 
     def draw_actual_line(self):
         with self.canvas:
@@ -112,6 +112,7 @@ class BurndownScreen(Screen):
             issue_width = self.parent.width*0.8/2
         try:
             issue_height = self.parent.height*0.8/milestone_data['total_issues']
+            print(self.parent.height*0.8, '/', milestone_data['total_issues'])
         except ZeroDivisionError:
             issue_height = self.parent.height*0.8/2
         return issue_width, issue_height
@@ -129,6 +130,7 @@ class BurndownScreen(Screen):
         for day in range(len(daylist)):
             coordinate_list.append(day*width_of_issue + position_offset_x)
             coordinate_list.append(daylist[day]*height_of_issue + position_offset_y)
+        print(coordinate_list)
         return coordinate_list
 
     def get_issue_count(self):
